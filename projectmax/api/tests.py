@@ -37,4 +37,29 @@ class ViewTestCase(TestCase):
 
     def test_api_can_create_a_project(self):
         """Test the api has project creation capability."""
-        self.assertEqual(self.response.status_code, status.HTTP_201_CREATED)
+        self.assertEquals(self.response.status_code, status.HTTP_201_CREATED)
+
+    def test_api_can_get_a_project(self):
+        """Test the api can get given project."""
+        project = Project.objects.get()
+        response = self.client.get(
+            reverse('details'),
+            kwargs={'pk': project.id}, format="json")
+
+    def test_api_can_update_project(self):
+        """Test the api can update a given project"""
+        change_project = {'name': 'Star hunters'}
+        res = self.client.put(
+            reverse('details', kwargs={'pk': project.id}),
+            change_project, format='json')
+        self.assertEquals(res.status_code, status.HTTP_201_OK)
+
+    def test_api_can_delete_project(self):
+        """Test the api can delete a given project"""
+        project = Project.objects.get()
+        response = self.client.delete(
+            reverse('details', kwargs={'pk': project.id}),
+            format='json',
+            follow=True)
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
